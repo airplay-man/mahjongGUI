@@ -1,0 +1,34 @@
+喰いタン:True、後付け:True
+喰い変え:False
+赤ドラ:5p, 5p, 5s, 5m
+荘:hanchan(西入:False)
+ダブロン:True(積み棒:kami)
+飛び終了:True
+30符4飜は満貫:True
+連風牌4符:False
+ラス親トップで連荘なし:True
+残った積み棒:Top
+形式聴牌:True(5枚目を待つ:True)
+リーチは持ち点1000以上:True
+リーチはツモ順がある時:False
+槓ドラ後めくり:daimin, ka
+海底牌の副露:False
+ノーテン親流れ:True(聴牌連荘:True)
+4人リーチで流局:True(親流れ:False)
+四風連打:True(親流れ:False)
+9種9牌:True(親流れ:False)
+トリロン流局:True(親流れ:False)
+四槓散了:True(親流れ:False)
+
+複合:double
+四暗刻単騎:double
+国士無双13面待ち:double
+純正九蓮宝燈:double
+緑一色發なし:double
+大四喜:double
+四槓子:double
+人和:Full
+流し満貫:True(鳴かれたら不成立:True)
+包(三元, 四喜):True(四槓:False)
+
+ローカルなど:
