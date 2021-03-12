@@ -105,13 +105,9 @@ class Application(ttk.Notebook):
             image = Image.open(PATH+"/sys/_grand/image/"+DIRECTION_img[i]+".png")
             image = image.resize((30, 30), Image.ANTIALIAS)
             self.img_directions.append(ImageTk.PhotoImage(image))
-        self.combo_players = []
-        for i in range(4):
-            self.combo_players.append(ttk.Combobox(self.frame_players, width=8, justify=tk.CENTER))
+        self.combo_players = [ttk.Combobox(self.frame_players, width=8, justify=tk.CENTER) for i in range(4)]
         self.bind_for_tenho()
-        self.entries_inputscores = []
-        for i in range(4):
-            self.entries_inputscores.append(tk.Entry(self.frame_players, width=8, justify=tk.CENTER))
+        self.entries_inputscores = [tk.Entry(self.frame_players, width=8, justify=tk.CENTER) for i in range(4)]
         #この試合が何試合目かを表示するカウンター
         self.num_game_counter = tk.StringVar()
         #入力決定ボタン

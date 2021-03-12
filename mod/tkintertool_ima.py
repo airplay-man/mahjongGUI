@@ -17,11 +17,14 @@ class Label(tk.Label):
     引数gridは、gridするかしないかを選べる
     listは何かに格納する場合
     '''
-    def __init__(self, master, text='', textvariable=None, bg=COLOR_BG, justify='center', font=None, image=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
+    def __init__(self, master, text='', textvariable=None, bg=COLOR_BG, justify='center', font=None, image=None, bind_b1_click=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
         if textvariable == None:
             super().__init__(master, text=text, bg=bg, font=font, justify=justify)
         else:
             super().__init__(master, textvariable=textvariable, bg=bg, font=font, justify=justify)
+
+        if bind_b1_click != None:
+            self.bind("<ButtonRelease-1>", bind_b1_click)
 
         if image != None:
             self.config(image=image)
@@ -78,14 +81,14 @@ class Button(tk.Button):
     引数gridは、gridするかしないかを選べる
     listは何かに格納する場合
     '''
-    def __init__(self, master, text='', command=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
+    def __init__(self, master, text='', command=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, padx=0, pady=0, list=None):
         super().__init__(master, text=text, command=command)
         if list != None:
             list.append(self)
             if grid:
-                list[-1].grid(row=row, column=column, sticky=sticky, rowspan=rowspan, columnspan=columnspan)
+                list[-1].grid(row=row, column=column, sticky=sticky, rowspan=rowspan, columnspan=columnspan, padx=padx, pady=pady)
         if list == None and grid:
-            self.grid(row=row, column=column, sticky=sticky, rowspan=rowspan, columnspan=columnspan)
+            self.grid(row=row, column=column, sticky=sticky, rowspan=rowspan, columnspan=columnspan, padx=padx, pady=pady)
 
 class Entry(tk.Entry):
     '''
@@ -94,10 +97,13 @@ class Entry(tk.Entry):
     listは何かに格納する場合
     initはinsert()をする
     '''
-    def __init__(self, master, width=20, justify=tk.CENTER, init=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
+    def __init__(self, master, width=20, justify=tk.CENTER, init=None, bind_return=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
         super().__init__(master, width=width, justify=justify)
         if init != None:
             self.insert(0, init)
+
+        if bind_return != None:
+            self.bind('<Return>', bind_return)
 
         if list != None:
             list.append(self)
@@ -140,8 +146,11 @@ class Checkbutton(tk.Checkbutton):
     引数gridは、gridするかしないかを選べる
     listは何かに格納する場合
     '''
-    def __init__(self, master, text='', variable=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
+    def __init__(self, master, text='', variable=None, bind_1=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
         super().__init__(master, text=text, variable=variable)
+
+        if bind_1 != None:
+            self.bind("<1>", bind_1)
 
         if list != None:
             list.append(self)
@@ -156,8 +165,8 @@ class Listbox(tk.Listbox):
     引数gridは、gridするかしないかを選べる
     listは何かに格納する場合
     '''
-    def __init__(self, master, height=10, selectmode='single', grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
-        super().__init__(master, height=height, selectmode=selectmode)
+    def __init__(self, master, height=10, selectmode='single', listvariable=[], grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
+        super().__init__(master, height=height, selectmode=selectmode, listvariable=listvariable)
 
         if list != None:
             list.append(self)
@@ -196,11 +205,33 @@ class BooleanVar(tk.BooleanVar):
             list.append(self)
 
 class Toplevel(tk.Toplevel):
-    def __init__(self, title='', func_when_destroy=None):
+    def __init__(self, title='', func_when_destroy=None, geometry=""):
         super().__init__()
         self.title(title)
+        if geometry != "":
+            self.geometry(geometry)
         if func_when_destroy != None:
             self.bind("<Destroy>", func_when_destroy)
+
+class Text(tk.Text):
+    def __init__(self, master, init='', undo=True, padx=0, pady=0, height=10, wrap=tk.WORD, bg='white', fg='black', highlightthickness=0, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
+        super().__init__(master, undo=undo, padx=padx, pady=pady, height=height, wrap=wrap, bg=bg, fg=fg, highlightthickness=highlightthickness)
+        self.insert(tk.END, init)
+        if list != None:
+            list.append(self)
+            if grid:
+                list[-1].grid(row=row, column=column, sticky=sticky, rowspan=rowspan, columnspan=columnspan)
+        if list == None and grid:
+            self.grid(row=row, column=column, sticky=sticky, rowspan=rowspan, columnspan=columnspan)
+
+    def getall(self):
+        return self.get('1.0', 'end -1c')
+    
+    def overwrite(self, str):
+        self.delete('1.0', tk.END)
+        self.insert(tk.END, str)
+       
+
 
 class Combobox(ttk.Combobox):
     '''
@@ -210,12 +241,15 @@ class Combobox(ttk.Combobox):
     initは、intならcurrent(), strならinsert()を行う
     bindは担当しないことにする
     '''
-    def __init__(self, master, value=(), width=20, state='normal', justify=tk.CENTER, init=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None):
+    def __init__(self, master, value=(), width=20, state='normal', justify=tk.CENTER, init=None, grid=True, row=0, column=0, sticky='', rowspan=1, columnspan=1, list=None, bind_selected=None):
         super().__init__(master, value=value, width=width, state=state, justify=justify)
         if type(init) == int:
             self.current(init)
         elif type(init) == str and state == 'normal':
             self.insert(0, init)
+
+        if bind_selected != None:
+            self.bind("<<ComboboxSelected>>", bind_selected)
 
         if list != None:
             list.append(self)
@@ -223,6 +257,13 @@ class Combobox(ttk.Combobox):
                 list[-1].grid(row=row, column=column, sticky=sticky, rowspan=rowspan, columnspan=columnspan)
         if list == None and grid:
             self.grid(row=row, column=column, sticky=sticky, rowspan=rowspan, columnspan=columnspan)
+
+    def overwrite(self, str):
+        '''
+        deleteしてinsertする流れをまとめたもの
+        '''
+        self.delete(0, tk.END)
+        self.insert(0, str)
 
 
 
